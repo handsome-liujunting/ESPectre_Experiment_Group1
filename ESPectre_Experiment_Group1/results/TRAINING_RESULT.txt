@@ -1,0 +1,29 @@
+ESPectre 训练结果记录
+======================
+
+生成时间：2026-10-22
+
+模型：MLP 8-24-12-1（神经网络分类器，二分类 IDLE/MOTION）
+特征：8 维子带特征（turb_iqr_over_mean_aggr, turb_autocorr, turb_zcr, l1_delta_lag_ratio, chan_shape_spread_subband, chan_shape_coherent_innovation_energy, chan_shape_excess_path, chan_shape_subband_kendall_lag_excess）
+归一化：log1p_standard
+FP 权重：1.75x
+
+数据：
+- motion（MOTION）：3601 包（8 个文件）
+- static_presence（IDLE）：1202 包（2 个文件）
+- 合计 4803 包，C6 芯片，环境 lab
+- 注：每文件约 600 包（60 s @ 10 pps），低于仓库校验 5000 包门槛
+
+3-fold 分组 CV（lineage_group）：
+- Fold recall：66.7%
+- Fold precision：89.6%
+- Fold FP rate：16.7%
+- Fold F1：76.3%
+- 评分窗口 48 / 4711
+
+部署安全门：
+- Paired gate：R=79.70% FP=8.59% alarms=1 -> FAIL（FP 超阈值 / Recall 不足）
+- Occupancy 70% paired gate：R=0.00% -> FAIL
+- 结论：部署安全门未通过，训练脚本未导出运行时模型产物（.onnx/.pt）。
+
+状态：模型调试中。

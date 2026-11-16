@@ -1,0 +1,15 @@
+{
+  "session_id": "idle-02",
+  "label": "idle",
+  "room": "dorm",
+  "chip": "ESP32-C6",
+  "duration_s": 90.063323,
+  "source_packets": 5754,
+  "source_rate_pps": 63.87727887855082,
+  "source_max_gap_s": 0.10139900000000068,
+  "rate_pps": 9.999790893261544,
+  "packets": 901,
+  "source_sha256": "dcc3b4aa92545c9fc0d750d160465567e4c445dbf8c70823402b6814c964edbc",
+  "source_role": "training",
+  "notes": "Empty room requested; iPhone hotspot; direct raw capture."
+}

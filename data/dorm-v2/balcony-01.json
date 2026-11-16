@@ -1,0 +1,15 @@
+{
+  "session_id": "balcony-01",
+  "label": "interference_balcony",
+  "room": "dorm",
+  "chip": "ESP32-C6",
+  "duration_s": 90.009359,
+  "source_packets": 5749,
+  "source_rate_pps": 63.86002593352542,
+  "source_max_gap_s": 0.11750400000001093,
+  "rate_pps": 9.998960219236757,
+  "packets": 901,
+  "source_sha256": "eb4fc9ebe9bfa825254a8a0c1c8fa4f4c104126519165af90dc4f3923c343551",
+  "source_role": "stress",
+  "notes": "Indoor room empty; person walking on balcony beyond closed balcony door; iPhone hotspot; direct raw capture."
+}

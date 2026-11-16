@@ -1,0 +1,15 @@
+{
+  "session_id": "static-presence-01",
+  "label": "static_presence",
+  "room": "dorm",
+  "chip": "ESP32-C6",
+  "duration_s": 89.998824,
+  "source_packets": 5755,
+  "source_rate_pps": 63.93416873980487,
+  "source_max_gap_s": 0.10378800000000155,
+  "rate_pps": 9.998320638024092,
+  "packets": 900,
+  "source_sha256": "e8eae7e4b0fdaa92de21f288aebd4554506403513287195f4a73f4a9e10154f2",
+  "source_role": "training",
+  "notes": "One person seated still; iPhone hotspot; direct raw capture."
+}

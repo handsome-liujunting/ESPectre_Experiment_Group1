@@ -7,9 +7,8 @@ Host lab: **Huawei 2012 Wireless Lab**. Mentor: 龚政.
 > Wi-Fi channel state information (CSI), without changing hardware, without cameras,
 > and without being fooled by fans, curtains, pets or traffic through the wall.
 
-**Status: Week 1 — documents written, pilot data collected, baseline not yet run.**
-Nothing in this repo has been validated end to end yet. See
-[docs/traceability.md](docs/traceability.md) for what is real and what is not.
+**Current pilot: offline occupancy model v2 and eight annotated dorm recordings.**
+[Run the v2 replay and read the measured limitations](docs/START-V2.md).
 
 ---
 

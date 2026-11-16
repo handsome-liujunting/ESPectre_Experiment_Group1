@@ -1,0 +1,9 @@
+session,label,raw_packets,seconds,occupied,unoccupied,unknown
+idle-01,idle,5760,90.02,89,0,1
+idle-02,idle,5754,90.06,0,0,90
+idle-03,idle,5752,89.99,89,0,1
+static-presence-01,static_presence,5755,90.0,89,0,1
+static-presence-02,static_presence,5755,90.0,0,0,90
+static-presence-03,static_presence,5756,90.0,0,0,90
+balcony-01,interference_balcony,5749,90.01,37,35,18
+balcony-02,interference_balcony,5758,90.0,0,0,90

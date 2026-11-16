@@ -1,0 +1,15 @@
+{
+  "session_id": "static_presence_c6_64sc_dev9678a7495e996c21_20261029_194041_588370_0001",
+  "label": "static_presence",
+  "room": "dorm",
+  "chip": "C6",
+  "channel": 11,
+  "recorded_at": "2026-10-29T19:40:41.569368",
+  "source_role": "train",
+  "source_packets": 5999,
+  "source_sha256": "89184931dc50664c7100b5cb1b85d108e5afc78ca4a954415c68ec58e5982099",
+  "duration_s": 59.900506,
+  "packets": 600,
+  "rate_pps": 10.0,
+  "notes": "Source static_presence_c6_64sc_dev9678a7495e996c21_20261029_194041_588370_0001.npz. Dorm sample; internal dns source"
+}

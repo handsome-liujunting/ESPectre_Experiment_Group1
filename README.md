@@ -9,6 +9,7 @@ Host lab: **Huawei 2012 Wireless Lab**. Mentor: 龚政.
 
 **Current pilot: offline occupancy model v2 and eight annotated dorm recordings.**
 [Run the v2 replay and read the measured limitations](docs/START-V2.md).
+[Review the original 24 recordings and the reproducible experiment history](docs/PILOT-20261029.md).
 
 ---
 

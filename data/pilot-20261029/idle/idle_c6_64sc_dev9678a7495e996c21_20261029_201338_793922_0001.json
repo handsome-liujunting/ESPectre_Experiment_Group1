@@ -1,0 +1,15 @@
+{
+  "session_id": "idle_c6_64sc_dev9678a7495e996c21_20261029_201338_793922_0001",
+  "label": "idle",
+  "room": "dorm",
+  "chip": "C6",
+  "channel": 11,
+  "recorded_at": "2026-10-29T20:13:38.776921",
+  "source_role": "train",
+  "source_packets": 6004,
+  "source_sha256": "2ccec6d31467851f98e8ce5128027c6a55b4301ee30fda8cc541da3d65a9a72d",
+  "duration_s": 60.009733,
+  "packets": 601,
+  "rate_pps": 10.0,
+  "notes": "Source empty_c6_64sc_dev9678a7495e996c21_20261029_201338_793922_0001.npz. Dorm sample; internal dns source"
+}

@@ -1,0 +1,560 @@
+{
+  "command": "python tools/loso_eval.py --data data --output results",
+  "data_sha256": "c83d53134a3c44c40c847dcf421fc347d6b75ffcd8521f279a7eba0b931e1693",
+  "seed": 42,
+  "numpy_version": "2.5.3",
+  "sklearn_version": "1.9.1",
+  "status_counts": {
+    "SHORT": 22
+  },
+  "classes": [
+    "idle",
+    "static_presence",
+    "motion"
+  ],
+  "state_columns": [
+    "UNOCCUPIED",
+    "OCCUPIED",
+    "UNKNOWN"
+  ],
+  "loso": {
+    "sessions": 18,
+    "classifier_confusion": [
+      [
+        296,
+        0,
+        4
+      ],
+      [
+        0,
+        360,
+        0
+      ],
+      [
+        2,
+        1,
+        417
+      ]
+    ],
+    "classifier_scores": {
+      "idle": {
+        "precision": 0.9932885906040269,
+        "recall": 0.9866666666666667,
+        "f1": 0.9899665551839465
+      },
+      "static_presence": {
+        "precision": 0.997229916897507,
+        "recall": 1.0,
+        "f1": 0.9986130374479889
+      },
+      "motion": {
+        "precision": 0.9904988123515439,
+        "recall": 0.9928571428571429,
+        "f1": 0.9916765755053508
+      }
+    },
+    "stable_state_confusion": [
+      [
+        255,
+        0,
+        45
+      ],
+      [
+        0,
+        354,
+        6
+      ],
+      [
+        0,
+        413,
+        7
+      ]
+    ],
+    "presence_recall": 0.9833333333333333,
+    "static_presence_recall": 0.9833333333333333,
+    "false_positive_rate": 0.0,
+    "presence_f1": 0.9915966386554622,
+    "known_state_coverage": 0.9462962962962963,
+    "sessions_detail": [
+      {
+        "path": "idle/idle_c6_64sc_dev9678a7495e996c21_20261029_201338_793922_0001.npz",
+        "label": "idle",
+        "sha256": "19a2b0849fcd564a38f91365385a7390909c614a77d12c3ba9328f13a0b828d3",
+        "classified_windows": 60,
+        "classifier_counts": [
+          59,
+          0,
+          1
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 51,
+          "OCCUPIED": 0,
+          "UNKNOWN": 9
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "idle/idle_c6_64sc_dev9678a7495e996c21_20261029_201501_738957_0001.npz",
+        "label": "idle",
+        "sha256": "f5843fa7c147935a97244180f0d7e6601bcb615e1f1369dea84ed457c9eb498f",
+        "classified_windows": 60,
+        "classifier_counts": [
+          60,
+          0,
+          0
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 51,
+          "OCCUPIED": 0,
+          "UNKNOWN": 9
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "idle/idle_c6_64sc_dev9678a7495e996c21_20261029_201620_454147_0001.npz",
+        "label": "idle",
+        "sha256": "9d305f576b18eee4daa2a8d834778ffc69418bad2b93fc8146907796ed30c888",
+        "classified_windows": 60,
+        "classifier_counts": [
+          60,
+          0,
+          0
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 51,
+          "OCCUPIED": 0,
+          "UNKNOWN": 9
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "idle/idle_c6_64sc_dev9678a7495e996c21_20261029_201739_086658_0001.npz",
+        "label": "idle",
+        "sha256": "7bcc13e922c9619be66011f565a8a4041c0bb2e11b9b5b3034e7e87df3530ae2",
+        "classified_windows": 60,
+        "classifier_counts": [
+          60,
+          0,
+          0
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 51,
+          "OCCUPIED": 0,
+          "UNKNOWN": 9
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "idle/idle_c6_64sc_dev9678a7495e996c21_20261029_202016_491138_0001.npz",
+        "label": "idle",
+        "sha256": "1ee59b4225d88c4aa38ff84d46499e3fa2613a144196f0bee3af7b5eb8668ca5",
+        "classified_windows": 60,
+        "classifier_counts": [
+          57,
+          0,
+          3
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 51,
+          "OCCUPIED": 0,
+          "UNKNOWN": 9
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "motion/motion_c6_64sc_dev9678a7495e996c21_20261029_194315_292854_0001.npz",
+        "label": "motion",
+        "sha256": "bbe1bb7aabb124590fd45df3a64e7b946b95becb5474f627ef2ae35a0338f0b8",
+        "classified_windows": 60,
+        "classifier_counts": [
+          0,
+          0,
+          60
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "motion/motion_c6_64sc_dev9678a7495e996c21_20261029_194628_804380_0001.npz",
+        "label": "motion",
+        "sha256": "8d1979429f4819d07ea48d60fc4d254271b66b34120a43179008d633caf11ef7",
+        "classified_windows": 60,
+        "classifier_counts": [
+          0,
+          0,
+          60
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "motion/motion_c6_64sc_dev9678a7495e996c21_20261029_194755_927597_0001.npz",
+        "label": "motion",
+        "sha256": "5ce737932ccc028586dee814dd9738fd1e1a8cad9245cafa25c30e11382d15b2",
+        "classified_windows": 60,
+        "classifier_counts": [
+          1,
+          0,
+          59
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "motion/motion_c6_64sc_dev9678a7495e996c21_20261029_194923_022156_0001.npz",
+        "label": "motion",
+        "sha256": "a11661257a307fabea0bf3b1ac701b5c7a6aff7a5e6683b760fb053348e9d4b0",
+        "classified_windows": 60,
+        "classifier_counts": [
+          0,
+          0,
+          60
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "motion/motion_c6_64sc_dev9678a7495e996c21_20261029_195050_205520_0001.npz",
+        "label": "motion",
+        "sha256": "f325e8b13cd3abe63a1d245b3bf0c61a06047ede0a6af09d8e79d7f356846a11",
+        "classified_windows": 60,
+        "classifier_counts": [
+          0,
+          1,
+          59
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "motion/motion_c6_64sc_dev9678a7495e996c21_20261029_195217_528491_0001.npz",
+        "label": "motion",
+        "sha256": "33d13ca67b3b824e28008fbe0be54890ee2ab0849d9b7764d94d0e5fa157feee",
+        "classified_windows": 60,
+        "classifier_counts": [
+          1,
+          0,
+          59
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "motion/motion_c6_64sc_dev9678a7495e996c21_20261029_195546_714832_0001.npz",
+        "label": "motion",
+        "sha256": "263e7e7b650062a45265e3d6aa0ade464db3b8ea20747eca8c57a63506a9908f",
+        "classified_windows": 60,
+        "classifier_counts": [
+          0,
+          0,
+          60
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "static_presence/static_presence_c6_64sc_dev9678a7495e996c21_20261029_193327_487183_0001.npz",
+        "label": "static_presence",
+        "sha256": "fe9bbb11a39e8aa8d2492295cdef9c99a7a837e62f06ef117cbf6c06970cfa9a",
+        "classified_windows": 60,
+        "classifier_counts": [
+          0,
+          60,
+          0
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "static_presence/static_presence_c6_64sc_dev9678a7495e996c21_20261029_193454_606045_0001.npz",
+        "label": "static_presence",
+        "sha256": "a01ad7b12f0afc0e43ccd2125bd2fc183711c26a81494c3d536928530368e884",
+        "classified_windows": 60,
+        "classifier_counts": [
+          0,
+          60,
+          0
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "static_presence/static_presence_c6_64sc_dev9678a7495e996c21_20261029_193621_853388_0001.npz",
+        "label": "static_presence",
+        "sha256": "afb4477fc73c94ea74b04cfecb71c636bc8527ced378208dd3ebb635c70349cf",
+        "classified_windows": 60,
+        "classifier_counts": [
+          0,
+          60,
+          0
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "static_presence/static_presence_c6_64sc_dev9678a7495e996c21_20261029_193749_089809_0001.npz",
+        "label": "static_presence",
+        "sha256": "c98e7cfe49cb0eb5ce37b99f1538ed5bc180400c0e4f5b645d8eb00e89a2cf2d",
+        "classified_windows": 60,
+        "classifier_counts": [
+          0,
+          60,
+          0
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "static_presence/static_presence_c6_64sc_dev9678a7495e996c21_20261029_193914_134966_0001.npz",
+        "label": "static_presence",
+        "sha256": "beb0caec6d33a70ea4f2f1226082eb9ec92d16f141f4c6099e9c9cf60cde5f03",
+        "classified_windows": 60,
+        "classifier_counts": [
+          0,
+          60,
+          0
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "static_presence/static_presence_c6_64sc_dev9678a7495e996c21_20261029_194041_588370_0001.npz",
+        "label": "static_presence",
+        "sha256": "7ff1fe7918659a325d67ef44e1ca0fc2c4d521a9202ac10d0b17ae695bd5252e",
+        "classified_windows": 60,
+        "classifier_counts": [
+          0,
+          60,
+          0
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      }
+    ]
+  },
+  "holdout": {
+    "sessions": 4,
+    "classifier_confusion": [
+      [
+        120,
+        0,
+        0
+      ],
+      [
+        56,
+        2,
+        2
+      ],
+      [
+        1,
+        0,
+        59
+      ]
+    ],
+    "classifier_scores": {
+      "idle": {
+        "precision": 0.6779661016949152,
+        "recall": 1.0,
+        "f1": 0.8080808080808081
+      },
+      "static_presence": {
+        "precision": 1.0,
+        "recall": 0.03333333333333333,
+        "f1": 0.06451612903225806
+      },
+      "motion": {
+        "precision": 0.9672131147540983,
+        "recall": 0.9833333333333333,
+        "f1": 0.9752066115702479
+      }
+    },
+    "stable_state_confusion": [
+      [
+        102,
+        0,
+        18
+      ],
+      [
+        21,
+        0,
+        39
+      ],
+      [
+        0,
+        59,
+        1
+      ]
+    ],
+    "presence_recall": 0.49166666666666664,
+    "static_presence_recall": 0.0,
+    "false_positive_rate": 0.0,
+    "presence_f1": 0.659217877094972,
+    "known_state_coverage": 0.7583333333333333,
+    "sessions_detail": [
+      {
+        "path": "idle/idle_c6_64sc_dev9678a7495e996c21_20261029_201857_712677_0001.npz",
+        "label": "idle",
+        "sha256": "a0dc2c3b9b85a42f761a8bc203c84f09824b127735cb702929a5e03e8f96c574",
+        "classified_windows": 60,
+        "classifier_counts": [
+          60,
+          0,
+          0
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 51,
+          "OCCUPIED": 0,
+          "UNKNOWN": 9
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "idle/idle_c6_64sc_dev9678a7495e996c21_20261029_203351_351527_0001.npz",
+        "label": "idle",
+        "sha256": "89ce1f42d3fc92da9cf34824f74ebe171fc198ead4ed10dbd22f74d1424ee921",
+        "classified_windows": 60,
+        "classifier_counts": [
+          60,
+          0,
+          0
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 51,
+          "OCCUPIED": 0,
+          "UNKNOWN": 9
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "motion/motion_c6_64sc_dev9678a7495e996c21_20261029_194501_786240_0001.npz",
+        "label": "motion",
+        "sha256": "cc295d5063136641ddf21fd8b8288777ae31003b128c7c70e40c96fa6ff86744",
+        "classified_windows": 60,
+        "classifier_counts": [
+          1,
+          0,
+          59
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 0,
+          "OCCUPIED": 59,
+          "UNKNOWN": 1
+        },
+        "known_state_flips": 0
+      },
+      {
+        "path": "static_presence/static_presence_c6_64sc_dev9678a7495e996c21_20261029_193029_284115_0001.npz",
+        "label": "static_presence",
+        "sha256": "b2ffd5948d9e3480aa56341fd6f72fa40664863856096686d34f69c9830e5fc3",
+        "classified_windows": 60,
+        "classifier_counts": [
+          56,
+          2,
+          2
+        ],
+        "state_counts": {
+          "UNOCCUPIED": 21,
+          "OCCUPIED": 0,
+          "UNKNOWN": 39
+        },
+        "known_state_flips": 0
+      }
+    ]
+  },
+  "excluded": [
+    {
+      "path": "idle/idle_c6_64sc_dev9678a7495e996c21_20261029_201215_833338_0001.npz",
+      "status": "SHORT",
+      "role": "exclude",
+      "notes": ""
+    },
+    {
+      "path": "static_presence/static_presence_c6_64sc_dev9678a7495e996c21_20261029_192810_573981_0001.npz",
+      "status": "SHORT",
+      "role": "exclude",
+      "notes": ""
+    }
+  ],
+  "stress": {
+    "interference_fan": {
+      "sessions": 0,
+      "missing": 2,
+      "false_positive_rate": null,
+      "known_state_coverage": null,
+      "sessions_detail": []
+    },
+    "interference_curtain": {
+      "sessions": 0,
+      "missing": 2,
+      "false_positive_rate": null,
+      "known_state_coverage": null,
+      "sessions_detail": []
+    },
+    "interference_corridor": {
+      "sessions": 0,
+      "missing": 2,
+      "false_positive_rate": null,
+      "known_state_coverage": null,
+      "sessions_detail": []
+    },
+    "interference_wifi": {
+      "sessions": 0,
+      "missing": 2,
+      "false_positive_rate": null,
+      "known_state_coverage": null,
+      "sessions_detail": []
+    }
+  }
+}

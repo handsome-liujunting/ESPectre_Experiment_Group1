@@ -1,0 +1,15 @@
+{
+  "session_id": "motion_c6_64sc_dev9678a7495e996c21_20261029_195217_528491_0001",
+  "label": "motion",
+  "room": "dorm",
+  "chip": "C6",
+  "channel": 11,
+  "recorded_at": "2026-10-29T19:52:17.510488",
+  "source_role": "train",
+  "source_packets": 6003,
+  "source_sha256": "e0a34800783a091d997e8227634bd03a396f0318ac775cd15691af890212f04a",
+  "duration_s": 60.000399,
+  "packets": 601,
+  "rate_pps": 10.0,
+  "notes": "Source motion_c6_64sc_dev9678a7495e996c21_20261029_195217_528491_0001.npz. Dorm sample; internal dns source"
+}

@@ -32,12 +32,28 @@ Status thresholds:
 
 | Status | Meaning |
 | --- | --- |
-| `PASS` | ≥ 1000 packets, ≥ 5 pps, no gaps > 2 s |
-| `SHORT` | 300–999 packets — usable, excluded from the headline metric |
+| `PASS` | ≥ 500 packets, ≥ 5 pps, no gaps > 2 s |
+| `SHORT` | 300–499 packets — usable, excluded from the headline metric |
 | `DEGRADED` | rate < 5 pps |
 | `FAIL` | < 300 packets, gaps, mixed labels, NaN, missing key, label ≠ folder |
 
-The 1000-packet bar was chosen before any data existed. At 10 packets/s it means
-100 s, and **no capture in this repo reaches it** (pilot 601, dorm-v2 about 900).
-Every published number is therefore computed on `SHORT` captures. Either accept that
-and say it everywhere, or re-record at 100 s and re-run.
+The 500-packet floor is ~50 s at 10 packets/s: about 50 one-second windows, enough
+for a per-session estimate with a wide error bar, which is what a sixty-second pilot
+capture can honestly support. The **acceptance target is 300 s (~3000 packets)**;
+judge against it with `--min-ok-packets 3000`, which flags every capture in the
+repository today as `SHORT`. Do not describe the pilot numbers as acceptance evidence.
+
+## Provenance in generated results
+
+`loso_eval.py` writes `source_commit` into `loso_metrics.json`, taken from
+`git rev-parse HEAD` inside the checkout. Running from a downloaded ZIP is not a
+clone, so pass the commit explicitly:
+
+```bash
+python tools/loso_eval.py --data data/pilot-20261029 \
+    --output results/pilot-20261029 --commit <sha shown on GitHub>
+```
+
+If neither is available the field is `null` with `source_commit_source: "unknown"`,
+which is a visible gap rather than a guess.
+

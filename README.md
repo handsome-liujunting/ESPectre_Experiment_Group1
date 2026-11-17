@@ -65,8 +65,9 @@ scored **3.3 %**, which is the honest measure of how far that model generalised.
 | `data/pilot-20261029/` | 24 | 60 s | 8 idle, 8 static, 8 motion |
 | `data/dorm-v2/` | 8 | 90 s | 3 idle, 3 static, 2 through-door (balcony) |
 
-By the validator's own 1000-packet bar every capture in this repo is `SHORT`; the
-figures above are therefore pilot-grade with wide error bars, and `results/` says so.
+They clear the validator's 500-packet pilot floor but are `SHORT` against the 300 s
+acceptance target, so the figures above are pilot-grade with wide error bars, and
+`results/` says so on every line that quotes them.
 
 ## Scope
 

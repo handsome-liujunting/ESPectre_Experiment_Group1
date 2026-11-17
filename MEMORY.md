@@ -16,7 +16,9 @@ Keep this short. Facts only, with the thing that proves them.
   Layout `<label>-NN-raw.npz` + `.json`; read by `tools/presence_v2.py`.
 - Both sets: 64 amplitude columns, `timestamps`, 10.02 pps after decimation,
   channel 11, RSSI about -32 dBm.
-- Validator bar is 1000 packets, so **every capture in this repo is SHORT**.
+- Validator: PASS at 500 packets (pilot floor), `SHORT` below that and against the
+  300 s / 3000-packet acceptance target. Every capture here passes the floor and
+  fails the target, so no number here is acceptance evidence.
 
 ## Current numbers (these are the ones to quote)
 - v2 LOSO on the six `dorm-v2` clean sessions: **30.7 % idle false positives
@@ -52,4 +54,5 @@ Keep this short. Facts only, with the thing that proves them.
 - Deadline and team split unconfirmed.
 - 0 / 3 interviews done.
 - Fan condition dropped (no fan available); curtain and external Wi-Fi never recorded.
-- `results/` files do not yet embed the git commit, which `results/README.md` requires.
+- `results/pilot-20261029/loso_metrics.json` predates `source_commit` in
+  `loso_eval.py`; one rerun fixes it. Do not hand-edit the JSON.

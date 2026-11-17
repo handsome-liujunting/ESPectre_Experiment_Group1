@@ -21,6 +21,13 @@ see the trap in `MEMORY.md` and the table in `README.md`.
 Every file must contain: the command line, the seed, the git commit and the sha256
 of every input session. A metrics file without those is deleted, not cited.
 
-**Known breach of that rule:** `pilot-20261029/loso_metrics.json` records the command,
-the seed, the dataset hash and library versions, but **not** the git commit. Adding it
-needs a rerun with `git rev-parse HEAD` plumbed into `loso_eval.py`.
+**Known breach of that rule:** `pilot-20261029/loso_metrics.json` was written before
+`loso_eval.py` recorded `source_commit`. The field is now plumbed in, so the fix is a
+rerun, not a hand edit:
+
+```bash
+python tools/loso_eval.py --data data/pilot-20261029 --output results/pilot-20261029
+```
+
+Until that rerun happens the file names the dataset hash and the seed but not the
+code version, and this line is the record of it.

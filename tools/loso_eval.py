@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import shlex
+import subprocess
 import sys
 
 import numpy as np
@@ -22,6 +23,20 @@ STATE_NAMES = ("UNOCCUPIED", "OCCUPIED", "UNKNOWN")
 
 def ratio(top, bottom):
     return float(top / bottom) if bottom else None
+
+
+def resolve_commit(explicit, root):
+    """The commit this code was run from. Never guessed: git, then --commit, then None."""
+    if explicit:
+        return explicit, "--commit"
+    try:
+        found = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root,
+                               capture_output=True, text=True, timeout=10)
+        if found.returncode == 0 and found.stdout.strip():
+            return found.stdout.strip(), "git"
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return None, "unknown"
 
 
 def fit(sessions, data_hash):
@@ -138,6 +153,7 @@ def report(metrics):
 
     lines = [
         "# ESPectre pilot evaluation", "", f"Command: `{metrics['command']}`",
+        "", f"Source commit: `{metrics['source_commit'] or 'not recorded'}`.",
         "", f"Dataset SHA-256: `{metrics['data_sha256']}`. Seed: {SEED}.",
         "", "| Evaluation | Sessions | Presence recall | Static recall | Idle false-positive rate | Presence F1 | Known-state coverage |",
         "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
@@ -175,7 +191,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--commit", default=None,
+                        help="git commit this run corresponds to, if the tree is not a clone")
     args = parser.parse_args()
+    commit, commit_source = resolve_commit(args.commit, Path(__file__).resolve().parents[1])
     sessions, skipped = read_sessions(args.data)
     clean = [item for item in sessions if item["label"] in LABELS]
     training = [item for item in clean if item["role"] in (None, "train")]
@@ -204,6 +223,7 @@ def main():
         }
     metrics = {
         "command": shlex.join(["python", *sys.argv]),
+        "source_commit": commit, "source_commit_source": commit_source,
         "data_sha256": fingerprint(sessions), "seed": SEED,
         "numpy_version": np.__version__, "sklearn_version": sklearn.__version__,
         "status_counts": dict(Counter(item["status"] for item in sessions)),

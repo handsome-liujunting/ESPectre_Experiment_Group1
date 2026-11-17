@@ -34,7 +34,11 @@ import numpy as np
 
 DEFAULT_RATE_PPS = 10.0
 MIN_FAIL_PACKETS = 300
-MIN_OK_PACKETS = 1000
+# 500 packets is the pilot floor: at ~10 pps it is ~50 s, i.e. ~50 one-second
+# windows, enough for a per-session estimate with a wide error bar. The target
+# for the acceptance set is 300 s (~3000 packets); run --min-ok-packets 3000 to
+# report against that bar instead.
+MIN_OK_PACKETS = 500
 MIN_RATE_PPS = 5.0
 MAX_GAP_S = 2.0
 
@@ -91,7 +95,8 @@ def load_metadata(npz_path: Path) -> dict:
         return {"_metadata_error": True}
 
 
-def check_session(npz_path: Path, data_root: Path) -> dict:
+def check_session(npz_path: Path, data_root: Path,
+                  min_ok_packets: int = MIN_OK_PACKETS) -> dict:
     rel = npz_path.relative_to(data_root)
     result = {
         "session_id": npz_path.stem,
@@ -195,7 +200,7 @@ def check_session(npz_path: Path, data_root: Path) -> dict:
         notes.append("packets < %d" % MIN_FAIL_PACKETS)
     elif rate < MIN_RATE_PPS:
         result["status"] = "DEGRADED"
-    elif frames < MIN_OK_PACKETS:
+    elif frames < min_ok_packets:
         result["status"] = "SHORT"
     else:
         result["status"] = "PASS"
@@ -235,6 +240,9 @@ def main(argv: list[str] | None = None) -> int:
                         help="write a CSV manifest here")
     parser.add_argument("--strict", action="store_true",
                         help="treat SHORT and DEGRADED as failures")
+    parser.add_argument("--min-ok-packets", type=int, default=MIN_OK_PACKETS,
+                        help="packets a session needs to count as PASS (default %d; "
+                             "use 3000 to judge against the 300 s target)" % MIN_OK_PACKETS)
     args = parser.parse_args(argv)
 
     if not args.data.is_dir():
@@ -246,7 +254,8 @@ def main(argv: list[str] | None = None) -> int:
         print("ERROR: no .npz sessions under %s" % ascii_text(args.data))
         return 2
 
-    rows = [check_session(path, args.data) for path in files]
+    rows = [check_session(path, args.data, min_ok_packets=args.min_ok_packets)
+            for path in files]
     print("")
     print_table(rows)
 

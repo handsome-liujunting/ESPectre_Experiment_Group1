@@ -1,11 +1,13 @@
 {
-  "command": "python tools/loso_eval.py --data data --output results",
+  "command": "python 'tools\\loso_eval.py' --data data/pilot-20261029 --output results/pilot-20261029 --commit 934b13ea24f809dcb847e8a3ffd6d521ba78058c",
+  "source_commit": "934b13ea24f809dcb847e8a3ffd6d521ba78058c",
+  "source_commit_source": "--commit",
   "data_sha256": "c83d53134a3c44c40c847dcf421fc347d6b75ffcd8521f279a7eba0b931e1693",
   "seed": 42,
-  "numpy_version": "2.5.3",
+  "numpy_version": "2.5.5",
   "sklearn_version": "1.9.1",
   "status_counts": {
-    "SHORT": 22
+    "PASS": 22
   },
   "classes": [
     "idle",
@@ -516,13 +518,13 @@
   "excluded": [
     {
       "path": "idle/idle_c6_64sc_dev9678a7495e996c21_20261029_201215_833338_0001.npz",
-      "status": "SHORT",
+      "status": "PASS",
       "role": "exclude",
       "notes": ""
     },
     {
       "path": "static_presence/static_presence_c6_64sc_dev9678a7495e996c21_20261029_192810_573981_0001.npz",
-      "status": "SHORT",
+      "status": "PASS",
       "role": "exclude",
       "notes": ""
     }
@@ -543,6 +545,13 @@
       "sessions_detail": []
     },
     "interference_corridor": {
+      "sessions": 0,
+      "missing": 2,
+      "false_positive_rate": null,
+      "known_state_coverage": null,
+      "sessions_detail": []
+    },
+    "interference_balcony": {
       "sessions": 0,
       "missing": 2,
       "false_positive_rate": null,

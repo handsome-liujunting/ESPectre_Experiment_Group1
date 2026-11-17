@@ -1,6 +1,8 @@
 # ESPectre pilot evaluation
 
-Command: `python tools/loso_eval.py --data data --output results`
+Command: `python 'tools\loso_eval.py' --data data/pilot-20261029 --output results/pilot-20261029 --commit 934b13ea24f809dcb847e8a3ffd6d521ba78058c`
+
+Source commit: `934b13ea24f809dcb847e8a3ffd6d521ba78058c`.
 
 Dataset SHA-256: `c83d53134a3c44c40c847dcf421fc347d6b75ffcd8521f279a7eba0b931e1693`. Seed: 42.
 
@@ -31,6 +33,7 @@ date. Whole-capture splitting leaves time-of-day and collection-order effects in
 | interference_fan | 0 | 2 | not measured |
 | interference_curtain | 0 | 2 | not measured |
 | interference_corridor | 0 | 2 | not measured |
+| interference_balcony | 0 | 2 | not measured |
 | interference_wifi | 0 | 2 | not measured |
 
 See loso_metrics.json for per-capture outcomes and confusion matrices.

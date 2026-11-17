@@ -4,18 +4,18 @@ Every requirement in the PRD, where it lives, what proves it, and its real statu
 Update this file in the same commit that changes the status. `not started` is a
 valid, honest status.
 
-**Last updated:** 2026-11-16 (pilot import, offline model and measured evaluation)
+**Last updated:** 2026-11-17 (headline switched to the v2 result; pilot demoted)
 
 | FR | Requirement (short) | Module / file | Evidence in repo | Status |
 | --- | --- | --- | --- | --- |
-| FR-01 | Record a labelled session with one command | `tools/capture_session.py` (specified) | — | **not started** |
-| FR-02 | Validate sessions + build manifest | `tools/validate_sessions.py` | `data/manifest.csv`, validator stdout | **implemented** (24 imported and validated; SHORT) |
-| FR-03 | Window features + 3-class classifier | `tools/presence.py`, `tools/loso_eval.py` | `results/presence_model.json` | **pilot implemented** (static holdout missed) |
-| FR-04 | Hysteresis state machine | `tools/presence.py` | state counts in `results/loso_metrics.json` | **offline replay implemented** (timed live transitions pending) |
-| FR-05 | Live dashboard | `tools/live_dashboard.py` (specified) | screen recording | **not started** |
-| FR-06 | LOSO evaluation + report | `tools/loso_eval.py` | `results/LOSO-REPORT.md` | **pilot evaluated** (full acceptance pending) |
-| FR-07 | Interference stress table | `tools/loso_eval.py` | stress section in `results/loso_metrics.json` | **pending data** (0 interference sessions) |
-| FR-08 | Machine-readable metrics with seed + hash | `tools/loso_eval.py` | metrics JSON header | **implemented** |
+| FR-01 | Record a labelled session with one command | `tools/capture_session.py` (specified) | none | **not started** |
+| FR-02 | Validate sessions + build manifest | `tools/validate_sessions.py`, `tools/import_pilot.py` | `data/pilot-20261029/manifest.csv`; 24 sessions, 8/8/8, all `SHORT` | **implemented** |
+| FR-03 | Window features + 3-class classifier | `tools/presence.py`, `tools/presence_v2.py` | `results/pilot-20261029/presence_model.json`, `results/v2/presence-v2.json` | **implemented (pilot), changed to v2** |
+| FR-04 | Hysteresis state machine | `tools/presence.py` `states()` | state counts in `results/pilot-20261029/loso_metrics.json` | **offline replay implemented**; timed live transitions pending |
+| FR-05 | Live dashboard | `tools/live_dashboard.py` (specified) | none | **not started** |
+| FR-06 | LOSO evaluation + report | `tools/loso_eval.py`, `tools/presence_v2.py` | `results/pilot-20261029/LOSO-REPORT.md`, `results/v2/CSI-feature-comparison.csv` | **pilot evaluated**; full-duration acceptance pending |
+| FR-07 | Interference stress table | `tools/presence_v2.py` replay | `results/v2/CSI-v2-balcony-01.csv`, `CSI-v2-balcony-02.csv` | **partial — 1 of 4 conditions, 2 sessions, null result** |
+| FR-08 | Machine-readable metrics with seed + hash | `tools/loso_eval.py` | metrics JSON header | **implemented**, except the git commit field |
 
 ## Document-level traceability
 
@@ -25,14 +25,19 @@ valid, honest status.
 | PRD | 3–5 core functions, out of scope, journey, FR IDs, rules, acceptance, NFR, metrics | `docs/PRD-ESpectre-MVP-v1.0.md` §3–§9 |
 | Tech Design | structure, choices + simpler alternative, data model, key impl, failure, run, cost | `docs/TechDesign-ESpectre-MVP-v1.0.md` §1–§7 |
 | AGENTS.md | repository instructions | `AGENTS.md` |
-| Decision record | why, alternatives | `docs/ai-decision-log.md` D-001…D-009 |
+| Decision record | why, alternatives | `docs/ai-decision-log.md` D-001…D-012 |
 
 ## Known gaps (stated, not hidden)
 
-- The offline model uses 18 training captures. Four original holdouts are evaluated separately and two original exclusions are preserved. The single seated holdout was missed.
+- **Headline is 30.7 % idle false positives and 64.4 % seated recall** (v2, six
+  `dorm-v2` sessions). Anything better comes from the pilot, which is superseded.
+- Every capture is `SHORT` against the validator's own 1000-packet bar.
+- FR-07: fan condition **dropped** (no fan in the test room, 2026-11-17); curtain and
+  external Wi-Fi never recorded. Only through-door evidence exists, and the frozen
+  model reported 0 occupied windows on both balcony sessions.
 - 0 / 3 practitioner interviews. Proposal §3(c) says so.
-- Interference sessions: 0 recorded. FR-07 cannot be claimed.
 - Team split and deadline unconfirmed; plan owners are placeholders.
+- `results/` files carry no git commit, although `results/README.md` requires it.
 
 ## How to update a row
 

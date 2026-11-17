@@ -15,7 +15,7 @@ Read first: `docs/PRD-ESpectre-MVP-v1.0.md`, then `docs/TechDesign-ESpectre-MVP-
 
 ```
 docs/        proposal, PRD, tech design, demo script, data plan, decision log
-tools/       our own pipeline (validate_sessions.py is the only real script today)
+tools/       our own pipeline (validator, features, LOSO evaluator, v2 model)
 data/        sessions: <label>/<session>.npz + .json, plus manifest.csv
 results/     generated metrics + reports (never hand-edited)
 ```
@@ -25,10 +25,14 @@ results/     generated metrics + reports (never hand-edited)
 ```bash
 pip install -r requirements.txt
 python tools/validate_sessions.py --data data --manifest data/manifest.csv
+python tools/loso_eval.py --data data/pilot-20261029 --output results/pilot-20261029
+python tools/presence_v2.py replay --model results/v2/presence-v2.json --input data/dorm-v2/balcony-01-raw.npz
 ```
 
-`tools/loso_eval.py`, `tools/capture_session.py` and `tools/live_dashboard.py` are
-**specified but not written yet**. Do not reference them as if they exist.
+`tools/presence.py`, `tools/presence_v2.py` and `tools/loso_eval.py` are
+**implemented** and have produced committed results. `tools/capture_session.py`
+and `tools/live_dashboard.py` are **specified but not written yet** — do not
+reference them as if they exist.
 
 ## Rules that are not negotiable
 
@@ -54,6 +58,8 @@ python tools/validate_sessions.py --data data --manifest data/manifest.csv
 | Old metrics: CV F1 76.3 % vs deployment gate FAIL | Numbers came from a different split and a different gate | Do not quote them as current results; rerun LOSO and cite the JSON |
 | Windows console + Chinese output | `UnicodeEncodeError` on redirected stdout | Scripts write ASCII to stdout; UTF-8 only to files |
 | `.npz` label stored per frame | Mixed labels inside one session | Reject mixed-label sessions in the validator |
+| Pilot LOSO: 98.3 % seated recall, 0 % false positives | Looks like a finished detector | It is not. 18 folds, one evening, one room, identical state sequences, zero flips. The one independent seated session scored 3.3 %. Quote both or neither |
+| `data/dorm-v2/` fed to `validate_sessions.py` | Folder is not a label, so labels resolve to `None` | That set is read by `tools/presence_v2.py`, not the validator |
 
 ## Done means
 

@@ -9,14 +9,21 @@ Keep this short. Facts only, with the thing that proves them.
   prototype + evaluation report.
 - MVP scope: one room, one ESP32-C6, one laptop, 3 classes → binary occupancy.
 
-## Data
-- 24 pilot sessions on a **separate machine**: 8 `idle`, 8 `static_presence`,
-  8 `motion`. Not yet in this repo.
-- Pilot format: `.npz` with `csi_data` (float, frames × subcarriers) and `label`.
-- Rate ~10 packets/s; pilot files ≈ 600 packets (≈ 60 s). New target 300 s.
-- Pilot totals: 4803 packets across files.
-- Contract: `docs/TechDesign-ESpectre-MVP-v1.0.md` §3; validated by
-  `tools/validate_sessions.py`.
+## Data (all in this repo)
+- `data/pilot-20261029/`: 24 sessions, 60 s, 8 idle / 8 static / 8 motion.
+  Source roles: 18 train, 4 holdout, 2 exclude.
+- `data/dorm-v2/`: 8 sessions, 90 s, 3 idle / 3 static / 2 balcony (through-door).
+  Layout `<label>-NN-raw.npz` + `.json`; read by `tools/presence_v2.py`.
+- Both sets: 64 amplitude columns, `timestamps`, 10.02 pps after decimation,
+  channel 11, RSSI about -32 dBm.
+- Validator bar is 1000 packets, so **every capture in this repo is SHORT**.
+
+## Current numbers (these are the ones to quote)
+- v2 LOSO on the six `dorm-v2` clean sessions: **30.7 % idle false positives
+  (83/270), 64.4 % seated recall (174/270)**.
+- v2 frozen model on the two balcony sessions: 0 occupied, 81 unoccupied, 9 unknown
+  per session.
+- Everything else in `results/pilot-20261029/` is pilot-grade.
 
 ## Numbers from the earlier experiment (historical, not current results)
 - MLP 8-24-12-1, 8 subband features, `log1p_standard`, FP weight 1.75.
@@ -25,17 +32,24 @@ Keep this short. Facts only, with the thing that proves them.
   occupancy 70 % → recall 0.00 % → FAIL. No model exported.
 - Why it is not quotable: different split, different gate definitions, no LOSO.
 
+## Trap worth remembering
+- Pilot LOSO reports 98.3 % static recall at 0 % FP. It is **not** generalisation:
+  18 folds, one evening, one room, identical state sequences, zero flips. The one
+  independent seated session scored 3.3 %. Never quote 98.3 % without 3.3 %.
+
 ## Decisions
-- LOSO instead of random splits — see `docs/ai-decision-log.md` D-001.
+- LOSO instead of random splits — `docs/ai-decision-log.md` D-001.
 - Interference is a stress table, not part of the headline metric — D-004.
 - Documents in English, chat in Chinese — D-006.
+- v2 result is the headline, pilot result is historical — 2026-11-17.
 
 ## Environment
 - Windows 11, workspace `C:\Users\silve\Desktop\DeepSeek工作区`.
-- Recording laptop is a different machine; data must be exported by hand.
+- Recording laptop is a different machine.
 - Console encoding bites on Chinese output; scripts keep stdout ASCII.
 
 ## Open
 - Deadline and team split unconfirmed.
 - 0 / 3 interviews done.
-- No interference sessions recorded yet.
+- Fan condition dropped (no fan available); curtain and external Wi-Fi never recorded.
+- `results/` files do not yet embed the git commit, which `results/README.md` requires.

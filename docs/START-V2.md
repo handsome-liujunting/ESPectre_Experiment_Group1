@@ -1,5 +1,10 @@
 # ESPectre occupancy pilot v2
 
+**This is the headline result of the project.** Six `dorm-v2` sessions, LOSO:
+30.7 % idle false positives (83/270) and 64.4 % seated recall (174/270). The
+October pilot in `docs/PILOT-20261029.md` is superseded and must not be quoted
+without this number.
+
 Requires Python and NumPy for replay. Open PowerShell in the extracted folder.
 
 ```powershell

@@ -8,7 +8,8 @@ import sys
 import numpy as np
 
 LABELS = ("idle", "static_presence", "motion")
-STRESS = ("interference_fan", "interference_curtain", "interference_corridor")
+STRESS = ("interference_fan", "interference_curtain", "interference_corridor",
+          "interference_balcony")
 FEATURE_VERSION = 1
 
 

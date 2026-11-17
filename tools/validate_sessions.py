@@ -46,6 +46,7 @@ KNOWN_LABELS = (
     "interference_curtain",
     "interference_corridor",
     "interference_wifi",
+    "interference_balcony",
 )
 
 

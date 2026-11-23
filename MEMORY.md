@@ -38,6 +38,13 @@ Keep this short. Facts only, with the thing that proves them.
 - Pilot LOSO reports 98.3 % static recall at 0 % FP. It is **not** generalisation:
   18 folds, one evening, one room, identical state sequences, zero flips. The one
   independent seated session scored 3.3 %. Never quote 98.3 % without 3.3 %.
+- `results/v2/CSI-8-session-results.csv` is the **pilot** model on the eight
+  `dorm-v2` captures. Its balcony-01 row says 37 occupied; the newer v2 replay says
+  0. Cite `CSI-v2-balcony-0{1,2}.csv`, never the 37 (D-011).
+- The demo page's pilot panel must use the official held-out sessions (201857 idle,
+  193029 static, 194501 motion) and fit on the 18 train sessions only. Taking the
+  first manifest row silently trains on a holdout session and makes the printed
+  numbers disagree with the cards.
 
 ## Decisions
 - LOSO instead of random splits — `docs/ai-decision-log.md` D-001.
@@ -46,13 +53,17 @@ Keep this short. Facts only, with the thing that proves them.
 - v2 result is the headline, pilot result is historical — 2026-11-17.
 
 ## Environment
-- Windows 11, workspace `C:\Users\silve\Desktop\DeepSeek工作区`.
-- Recording laptop is a different machine.
+- Windows 11 and Linux; the recording laptop is a different machine from the one
+  used for analysis.
 - Console encoding bites on Chinese output; scripts keep stdout ASCII.
 
 ## Open
 - Deadline and team split unconfirmed.
 - 0 / 3 interviews done.
-- Fan condition dropped (no fan available); curtain and external Wi-Fi never recorded.
-- `results/pilot-20261029/loso_metrics.json` predates `source_commit` in
-  `loso_eval.py`; one rerun fixes it. Do not hand-edit the JSON.
+- Capture campaign **closed** by D-010 on 2026-11-23: no curtain, corridor,
+  external-Wi-Fi, 300 s or second-room sessions will be added. They are stated as
+  not measured. Fan condition dropped (no fan available).
+- The v2 headline is reproducible: `python tools/v2_compare.py --data data/dorm-v2`
+  prints 83/270 and 174/270. The other three rows of
+  `results/v2/CSI-feature-comparison.csv` came from an exploratory script that was
+  never committed, so they are cited but not rerunnable.

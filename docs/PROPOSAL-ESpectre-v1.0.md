@@ -55,7 +55,7 @@ external wireless interference. This is a real operator requirement, not one we
 invented.
 
 **(b) Measurement evidence — recorded by us.** 24 pilot sessions, 8 per class
-(`idle`, `static_presence`, `motion`), 10 packets/s, ~300 s per session, single
+(`idle`, `static_presence`, `motion`), 10 packets/s, 60 s per session, single
 room, single device. First observation: windowed subcarrier-amplitude variance
 separates `idle` from `motion` easily, while `static_presence` sits close to
 `idle` and is where a naive detector loses recall. This is why the MVP keeps
@@ -70,12 +70,14 @@ are marked as such. Interview guide: Appendix A. Target: 3 short interviews
 
 A laptop-side detector fed by one ESP32-C6 over Wi-Fi:
 
-1. **Capture** CSI at ~10 packets/s and log a labelled session with one command.
-2. **Classify** each 1 s window into `idle` / `static` / `motion` (8 subcarrier-band
-   features → small MLP).
+1. **Capture** CSI at ~10 packets/s and log a labelled session with one command
+   (specified; not built — captures are committed).
+2. **Classify** each 1 s window into `idle` / `static` / `motion` (16 values per
+   second: 8 subcarrier bands × spread/change → logistic regression).
 3. **Smooth** the per-window probabilities with a hysteresis state machine
    (enter occupied fast, leave slow) → `OCCUPIED` / `UNOCCUPIED` / `UNKNOWN`.
-4. **Show** the current state, confidence and last 60 s on a live dashboard.
+4. **Show** the current state, confidence and last 60 s on an offline replay page
+   built from held-out captures; no live dashboard.
 5. **Evaluate** offline, leave-one-session-out, and emit a metrics report.
 
 The detector never leaves the laptop in v1. No firmware changes, no cloud, no
@@ -86,8 +88,8 @@ camera, no wearable.
 | Question | Answer | Evidence |
 | --- | --- | --- |
 | Is the hardware available? | Yes — ESP32-C6 boards + laptop in the lab | Confirmed with mentor |
-| Can we collect enough data? | 24 sessions already; protocol adds 6–12 | `docs/DATA-COLLECTION-PLAN.md` |
-| Is the compute affordable? | Laptop CPU only, 8 features, tiny MLP | ~10 pps input ⇒ trivial |
+| Can we collect enough data? | 24 pilot + 8 `dorm-v2` sessions already collected; campaign closed | `data/pilot-20261029/manifest.csv` |
+| Is the compute affordable? | Laptop CPU only, 16 values per second, logistic regression | ~10 pps input ⇒ trivial |
 | Is the scope one week of work? | Documents + baseline: 1 day; full MVP: ~5 working days | See §7 |
 | What is the biggest risk? | `static_presence` recall and curtain/fan false alarms | See §8 |
 
@@ -111,8 +113,8 @@ with the mentor and the team.**
 | --- | --- | --- | --- |
 | D1 | Import + validate 24 sessions; freeze data contract | `data/manifest.csv`, validation report | _袁培淞_ |
 | D2 | Window features + logistic-regression baseline, LOSO | baseline metrics JSON | _刘俊廷_ |
-| D3 | MLP + state machine + dashboard | live demo runs | _袁培淞_ |
-| D4 | Interference sessions (fan, curtain, corridor), stress evaluation | stress table | _刘俊廷_ |
+| D3 | State machine + offline replay page | demo page runs | _袁培淞_ |
+| D4 | Through-door interference capture + stress replay | stress table (1 of 4 conditions) | _刘俊廷_ |
 | D5 | Report, traceability table, demo rehearsal | final docs + video | _袁培淞_ |
 
 ## 8. Risks and mitigations

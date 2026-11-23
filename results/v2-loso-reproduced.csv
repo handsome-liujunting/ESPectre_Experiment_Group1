@@ -1,0 +1,7 @@
+feature,session,label,windows,occupied,unoccupied,unknown
+normalized_temporal,idle-01,0,90,83,0,7
+normalized_temporal,idle-02,0,90,0,81,9
+normalized_temporal,idle-03,0,90,0,81,9
+normalized_temporal,static-presence-01,1,90,0,52,38
+normalized_temporal,static-presence-02,1,90,85,0,5
+normalized_temporal,static-presence-03,1,90,89,0,1

@@ -5,8 +5,9 @@ Generated artefacts only. Nothing here is written by hand, except this README.
 | Path | Produced by | Status |
 | --- | --- | --- |
 | `v2/presence-v2.json` | `tools/presence_v2.py train` | current model, exported weights |
-| `v2/CSI-8-session-results.csv` | `tools/presence_v2.py replay` | frozen pilot model on the eight `dorm-v2` captures |
-| `v2/CSI-feature-comparison.csv` | `tools/presence_v2.py` | LOSO feature comparison, 3 idle + 3 seated |
+| `v2/CSI-8-session-results.csv` | `tools/presence_v2.py replay` | **superseded**: pilot model on the eight `dorm-v2` captures; its balcony-01 row says 37 occupied, the v2 replay says 0. Cite `v2/CSI-v2-balcony-0{1,2}.csv` instead |
+| `v2/CSI-feature-comparison.csv` | exploratory script, **not committed** | LOSO feature comparison, 3 idle + 3 seated |
+| `v2-loso-reproduced.csv` | `tools/v2_compare.py` | the `normalized_temporal` row of the table above, regenerated |
 | `v2/CSI-v2-balcony-0{1,2}.csv` | `tools/presence_v2.py replay` | held-out balcony replays |
 | `pilot-20261029/loso_metrics.json` | `tools/loso_eval.py` | superseded, kept for history |
 | `pilot-20261029/LOSO-REPORT.md` | `tools/loso_eval.py` | superseded, kept for history |
@@ -21,13 +22,23 @@ see the trap in `MEMORY.md` and the table in `README.md`.
 Every file must contain: the command line, the seed, the git commit and the sha256
 of every input session. A metrics file without those is deleted, not cited.
 
-**Known breach of that rule:** `pilot-20261029/loso_metrics.json` was written before
-`loso_eval.py` recorded `source_commit`. The field is now plumbed in, so the fix is a
-rerun, not a hand edit:
+The 2026-11 v2 replay CSVs (`CSI-8-session-results.csv`,
+`CSI-v2-balcony-0{1,2}.csv`) predate that header rule. Their command is recorded
+in `docs/NEXT-STEPS.md`; the model they were run with is `v2/presence-v2.json`
+(seed 42, feature version 2, six source hashes). Do not invent a header for them.
+
+`pilot-20261029/loso_metrics.json` names its `source_commit` again, because it was
+regenerated after `loso_eval.py` learned to record one. That breach is closed.
+
+**Known breach that is still open:** `v2/CSI-feature-comparison.csv` was written by a
+script that is not in this repository. Only its `normalized_temporal` row can be
+regenerated, and the headline rests on that row:
 
 ```bash
-python tools/loso_eval.py --data data/pilot-20261029 --output results/pilot-20261029
+python tools/v2_compare.py --data data/dorm-v2 --output results/v2-loso-reproduced.csv
 ```
 
-Until that rerun happens the file names the dataset hash and the seed but not the
-code version, and this line is the record of it.
+The other three rows (`raw_temporal`, `normalized_channel_shape`,
+`absolute_amplitude`) are cited as exploration, not as reproducible results. Either
+commit the script that produced them or delete the rows before the review; do not
+leave them looking reproducible.

@@ -1,88 +1,93 @@
-# ESPectre — Demo Script (3 minutes)
+# ESPectre — Demo Script (3 minutes, offline page)
 
-**Goal of the demo:** prove one claim — *the system knows the room is occupied even
-when the person is sitting still, and it does not fire when the room is empty.*
+**Goal of the demo:** prove one claim — *the system can see a person who is sitting
+still, and it does not pretend the empty room is perfect.* The demo is a recorded
+replay, not a live sensor: every curve on screen was computed from committed
+captures before the session, so nothing can fail because of Wi-Fi, a board, or a
+forgotten driver.
 
-Rehearse it twice. Anything you cannot say in plain words is not understood yet.
+The page is `demo/index.html` (delivery copy: `demo-deliver/demo/`). Open it by
+double-clicking. It needs no server and no network. Keep `demo-data.js` in the same
+folder; the HTML alone will not load.
 
 ---
 
 ## Before you start (5 minutes before)
 
-- [ ] Laptop charged, dashboard already opened once (no first-run install in front of people).
-- [ ] ESP32-C6 powered, associated, packet rate visible ≥ 8 pps.
-- [ ] Terminal at repo root, font size ≥ 16.
-- [ ] `results/LOSO-REPORT.md` open in a second tab.
-- [ ] **Fallback ready:** a 60 s screen recording of a successful run, and
-      `results/loso_metrics.json`. If live fails you switch to these in 5 seconds
-      and say so — you do not debug in front of the audience.
-- [ ] Room quiet, door state as in the recorded sessions.
+- [ ] Open `index.html` once, press F11 for full screen, and walk through all six
+      steps with the arrow keys. Do not discover the layout in front of people.
+- [ ] Have `results/v2-loso-reproduced.csv` open in a second window, and the command
+      `python tools/v2_compare.py --data data/dorm-v2` already run once this session.
+- [ ] **Fallback ready:** a 3-minute screen recording of the same walkthrough. If the
+      laptop dies, switch to it in five seconds and say so.
+- [ ] Close chat windows. The page is the only thing on screen.
 
 ## 0:00–0:20 — The problem, in one breath
 
 > "Lighting and AC run on a schedule because we cannot measure occupancy cheaply.
-> PIR fails the moment someone sits still. Cameras are refused in bedrooms.
-> So we use the Wi-Fi that is already there: when a person is in the room, the
-> channel changes — even when they are only breathing."
-
-Show: the room, the two devices, the laptop. Nothing else on screen.
+> PIR fails the moment someone sits still. Cameras are refused in bedrooms. So we
+> use the Wi-Fi that is already there: when a person is in the room, the channel
+> changes — even when they are only breathing."
 
 ## 0:20–0:50 — What is running
 
-> "One ESP32-C6 sends frames, the laptop reads CSI at ten packets a second.
-> Every second we compute eight features, classify the second as empty, still, or
-> moving, and then smooth that into a room state — occupied or not.
-> The smoothing matters: a raw per-second answer flaps, and an operator will not
-> trust it."
+> "This is an offline replay of eleven held-out captures: six for the headline, two
+> balcony stress captures, three pilot captures. One ESP32-C6 recorded CSI at ten
+> packets a second; each second becomes sixteen numbers, a logistic regression
+> scores it, and a hysteresis state machine turns that into OCCUPIED, UNOCCUPIED or
+> UNKNOWN. There is no live dashboard in this submission — the demo is the recording."
 
-Show: architecture diagram in the Tech Design (zoom to the five boxes). 10 seconds, not 60.
+Point at the two files in the folder: `index.html` and `demo-data.js`. Say that the
+page computes nothing; it only draws numbers produced by `demo/build_demo_data.py`.
 
-## 0:50–2:10 — Live demonstration
+## 0:50–2:30 — Six steps, arrow keys
 
-State the expectation **before** each action, so the audience can judge it.
+State the point **before** pressing the arrow, so the audience can judge it.
 
-1. **Empty room** (20 s)
-   > "Right now nobody is in the room. Expect: UNOCCUPIED, high confidence."
-   Point at the state and the probability trace.
+1. **The mechanism** (`idle-02`). "A Wi-Fi link. When nobody moves the channel is
+   still; a body absorbs and scatters it. That is the whole sensor."
+2. **An empty room** (`idle-02`). "Ninety seconds, nobody in the room: 81 of 90
+   windows decided UNOCCUPIED. The 83 false positives in the headline all come from
+   a different empty capture, `idle-01` (83 of 90). One bad capture is the whole
+   30.7 % — that is why the number is quoted with its denominator."
+3. **Someone sitting still** (`static-presence-02`). "This is the hard case. PIR
+   loses this person. The detector finds 85 of 90 windows."
+4. **Where it fails** (`static-presence-01`). "Same label, different capture: 0 of
+   90, 52 confidently empty, 38 unknown. This is not a demo bug; it is the 64.4 %
+   headline. One seated capture in three does not look like the others."
+5. **Someone moving** (`pilot-motion`). "Walking is easy, and that is why 98.3 % on
+   the first campaign was misleading: motion dominates the features. The same first
+   campaign, on the one seated capture the model had never seen, scored 2 of 60
+   windows — and after hysteresis, 0 of 60. Quote all three or none."
+6. **Through the balcony door** (`balcony-01`). "A person walking outside, door
+   closed. The frozen model calls all 81 decided windows UNOCCUPIED. This is the only
+   interference condition we recorded — a null result, not a pass."
 
-2. **Walk in** (15 s)
-   > "I walk in. Expect OCCUPIED within two seconds."
-   Say the number as it flips: *"one point four seconds."*
+## 2:30–3:00 — The number, and what is missing
 
-3. **Sit still, hands off the desk** (40 s) — this is the whole point
-   > "Now I stop moving. This is where PIR loses me. The raw motion class drops,
-   > but the still-presence class holds, so the state stays OCCUPIED."
-   Do not talk over the trace; let them watch the probability stay up.
+Say the bad number first. It is the honest one, and leading with it stops the next
+question from being "why did you hide it".
 
-4. **Walk out, close the door** (20 s)
-   > "I leave. Expect UNOCCUPIED after about ten seconds — deliberately slow,
-   > so a person who pauses at the door does not switch the lights off."
+> "Six sessions, three empty, three seated, ninety seconds each, whole sessions held
+> out. False positives **30.7 % — 83 of 270** empty windows called occupied. Seated
+> recall **64.4 % — 174 of 270** seated windows found. Here is the command that
+> reproduces both."
 
-Do not touch the keyboard during this. If state flips wrongly, **say it out loud**:
-"That is a false clear, and it is the failure we are tracking" — do not hide it.
+Show `results/v2-loso-reproduced.csv` and run the command on screen:
 
-## 2:10–2:40 — The number
+```bash
+python tools/v2_compare.py --data data/dorm-v2 --output results/v2-loso-reproduced.csv
+```
 
-> "Twenty-four sessions, eight empty, eight still, eight walking, recorded the same
-> way. We hold out whole sessions, never single seconds, so the test is honest.
-> Presence recall is X, false-positive rate is Y, still-person recall is Z.
-> Baseline logistic regression gets A; the small network gets B.
-> Here is the command that reproduces it."
+It prints the four numbers and exits non-zero if they drift.
 
-Show `results/LOSO-REPORT.md` — the table, then the command line at the bottom of
-the file. One command, one JSON.
+Then name the limits, in one breath:
 
-## 2:40–3:00 — What does not work yet
-
-> "Three things are not done. Interference: a fan or a curtain still produces
-> false alarms — we have the sessions and the table, the number is bad.
-> Multi-person: not attempted. And this is one room, one device model.
-> Next step is the interference set, not a bigger model."
-
-Show `results/stress_metrics.json` even if it is ugly. An honest failure is worth
-more marks than a hidden one.
-
----
+> "Three limits. One: every capture is 60 or 90 seconds against a 300-second
+> acceptance target, so this is pilot-grade. Two: only the through-door interference
+> condition was recorded; fan, curtain, corridor and external Wi-Fi are not measured,
+> not passed. Three: one room, one device, and the capture and live-dashboard tools
+> in the PRD were not built — the pipeline is offline only."
 
 ## Questions you will be asked (prepare these answers)
 
@@ -90,14 +95,15 @@ more marks than a hidden one.
 | --- | --- |
 | "Why not just PIR?" | PIR is motion-only; the brief explicitly requires still-person detection. |
 | "Why not a camera?" | Privacy; the deployment target is bedrooms and hotel rooms. |
-| "Isn't this just overfitting to your room?" | One room is the stated scope; sessions are held out whole, and the limitation is written down. |
+| "Isn't this overfitting to your room?" | One room is the stated scope; sessions are held out whole, and the limitation is written down. |
 | "What happens if two people?" | Not supported in v1; the label set has no multi-person class. |
-| "How do you know 90 % recall isn't luck?" | 24 sessions, per-fold numbers in the JSON, fixed seed, rerun reproduces. |
+| "How do you know 64 % recall isn't luck?" | Six sessions, per-fold numbers in the CSV, fixed seed 42, and the command reprints the same 174/270. It probably *is* noisy — that is why the number is quoted with its denominator. |
 | "Why the ten-second clear delay?" | Asymmetry is a product decision: a late clear wastes energy, a missed entry breaks the feature. |
-| "What if the Wi-Fi is busy?" | Not measured yet — that is the external-interference case in the stress set. |
+| "What if the Wi-Fi is busy?" | Not measured; external Wi-Fi is one of the interference conditions with zero sessions. |
+| "Where is the live dashboard?" | Not built. The demo is a recorded replay, and saying so is cheaper than pretending. |
 
 ## Rules
 
 1. Never show a number you cannot regenerate on the spot.
-2. Never say "it works" without the metric name.
+2. Never say "it works" without the metric name and its denominator.
 3. If something breaks, say what broke. Silence reads as not understanding.

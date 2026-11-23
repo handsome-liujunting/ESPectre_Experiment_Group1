@@ -81,6 +81,16 @@ def evaluate(model, session):
 
 
 def aggregate(rows):
+    if not rows:
+        return {
+            "sessions": 0, "classifier_confusion": np.zeros((3, 3), dtype=int).tolist(),
+            "classifier_scores": {label: {"precision": None, "recall": None, "f1": None}
+                                  for label in LABELS},
+            "stable_state_confusion": np.zeros((3, 3), dtype=int).tolist(),
+            "presence_recall": None, "static_presence_recall": None,
+            "false_positive_rate": None, "presence_f1": None,
+            "known_state_coverage": None, "sessions_detail": [],
+        }
     classes = np.zeros((3, 3), dtype=int)
     stable = np.zeros((3, 3), dtype=int)
     for row in rows:
@@ -196,6 +206,9 @@ def main():
     args = parser.parse_args()
     commit, commit_source = resolve_commit(args.commit, Path(__file__).resolve().parents[1])
     sessions, skipped = read_sessions(args.data)
+    if sessions and not any(item["role"] for item in sessions):
+        print("NOTE: no session carries source_role (missing .json sidecars?), so "
+              "every capture is treated as training data and the holdout set is empty.")
     clean = [item for item in sessions if item["label"] in LABELS]
     training = [item for item in clean if item["role"] in (None, "train")]
     holdout = [item for item in clean if item["role"] == "holdout"]

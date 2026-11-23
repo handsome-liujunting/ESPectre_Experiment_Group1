@@ -1,8 +1,11 @@
 # ESPectre MVP — Technical Design
 
-**Version 1.0 — 2026-11-12** · Companion: [PRD](PRD-ESpectre-MVP-v1.0.md)
+**Version 1.1 — 2026-11-23** · Companion: [PRD](PRD-ESpectre-MVP-v1.0.md)
 
 Scope: one room, one ESP32-C6, one laptop. Everything below is sized for that.
+v1.1 corrects the two places where the design described a system that was not
+shipped: the feature count (16 values, not 8) and the classifier (logistic
+regression, not an MLP). The MLP is kept in §4 as a rejected alternative.
 
 ---
 
@@ -17,13 +20,13 @@ Scope: one room, one ESP32-C6, one laptop. Everything below is sized for that.
                                    │      ▼                        │
                                    │  windowing (1 s / 1 s hop)    │
                                    │      ▼                        │
-                                   │  features (8 bands)           │
+                                   │  features (16 values)         │
                                    │      ▼                        │
-                                   │  classifier (MLP)             │
+                                   │  classifier (logistic regr.)  │
                                    │      ▼                        │
                                    │  state machine (hysteresis)   │
                                    │      ▼                        │
-                                   │  dashboard + metrics JSON     │
+                                   │  replay page + metrics JSON   │
                                    └───────────────────────────────┘
 ```
 
@@ -36,11 +39,11 @@ silently corrupt a training run.
 | Choice | Why | Simpler alternative | Why not |
 | --- | --- | --- | --- |
 | Python + NumPy | Everyone on the team can read it; no build step | C++ on the device | Firmware change is forbidden by the brief |
-| scikit-learn + a small MLP | 8 features, thousands of windows — a 2-layer net is enough | Deep CNN on raw CSI | Needs 100× more data than 24 sessions |
+| scikit-learn + logistic regression | 16 values per window, thousands of windows — one linear boundary is enough and it is inspectable | Small MLP (8→24→12→3) | Tried first; six training sessions cannot support 300+ weights, and the exported coefficients are easier to defend |
 | `.npz` per session + `.json` sidecar | Trivial to inspect, diff and commit | SQLite | Opaque in review; overkill for 24 files |
 | Leave-one-session-out | Sessions are the real sampling unit | Random window split | Leaks; this is exactly the trap the pilot run fell into |
 | Hysteresis state machine | Operators need stable states, not per-window truth | Raw per-window output | Flaps and looks broken in a demo |
-| Matplotlib/Tk dashboard | Zero install for the assessor | Web app | Extra surface, no benefit in one room |
+| Static HTML replay page | Opens offline with a double-click; the assessor sees the waterfall and the state ribbon | Live dashboard (Matplotlib/Tk or web) | Needs a board and a network in the room; adds failure modes without adding evidence |
 
 **Explicitly rejected:** the inherited `code/train_ml_model.py`. It depends on
 `tools.lib.*` from the upstream ESPectre repository and cannot run in this repo.
@@ -80,7 +83,7 @@ data/<label>/<...>.json
 | `data/manifest.csv` | one row per session: id, label, packets, duration, rate, path, sha256 | `validate_sessions.py` |
 | `results/loso_metrics.json` | per-fold and aggregate metrics, seed, git commit, data hash | `loso_eval.py` |
 | `results/LOSO-REPORT.md` | human-readable tables + command lines | `loso_eval.py` |
-| `results/stress_metrics.json` | interference table, frozen model | `stress_eval.py` |
+| `results/stress_metrics.json` | interference table, frozen model | `stress_eval.py` (**not written**; the stress block lives inside `loso_metrics.json` instead) |
 
 **Invariants**
 - `csi_data.shape[0] == len(timestamps)` when timestamps exist.
@@ -93,15 +96,21 @@ data/<label>/<...>.json
 **Windowing.** 1.0 s window, 1.0 s hop, no overlap. At 10 pps that is ~10 frames
 per window — small, which is why features must be aggregates, not per-frame.
 
-**Features (8).** Split subcarriers into 8 contiguous bands. For each band, over
-the window: `std(|H|)` and `std(|H|)/mean(|H|)` (turbulence). Bands are contiguous
-so the feature has a physical reading (frequency selectivity), not just a number.
-`log1p` then z-score, with the scaler fitted **inside each training fold**.
+**Features (16 values).** Each frame's 64 amplitudes are divided by their own L2
+norm, so the features describe channel *shape* and not transmit power. Split the 64
+subcarriers into 8 contiguous bands of 8. For each band, over the 1 s window:
+`spread` = std over time of each subcarrier, averaged over the band; and `change` =
+mean absolute frame-to-frame difference, averaged over the band. Concatenate
+`spread` (8) and `change` (8) = 16 values. Bands are contiguous so the feature has a
+physical reading (frequency selectivity), not just a number. `log1p` then z-score,
+with the scaler fitted **inside each training fold**.
 
-**Classifier.** Baseline: logistic regression on the same 8 features — if the MLP
-does not beat it by a clear margin, ship the logistic regression, because a smaller
-model is easier to defend. MLP: 8 → 24 → 12 → 3, dropout 0.2, class weights
-inversely proportional to class frequency, early stopping on the validation fold.
+**Classifier.** Shipped: logistic regression on the 16 values, trained on the
+`dorm-v2` sessions with the scaler inside every fold. The MLP (8 → 24 → 12 → 3,
+dropout 0.2, class weights, early stopping) was implemented first and rejected: six
+training sessions cannot support 300+ weights, and the linear coefficients can be
+printed and defended. The 16 values are what the frozen model in
+`results/v2/presence-v2.json` expects.
 
 **State machine.**
 
@@ -117,14 +126,15 @@ UNKNOWN         if now - last_packet > 5 s
 Asymmetry is intentional (PRD BR-3): a late exit wastes energy; a missed entry
 defeats the product.
 
-**Evaluation.** Leave-one-session-out over all sessions, scaler and thresholds
-fitted on the 23 training sessions only. Metrics: per-class precision/recall/F1,
+**Evaluation.** Leave-one-session-out over all sessions; scaler and thresholds are
+fitted on the other sessions only. Metrics: per-class precision/recall/F1,
 confusion matrix, presence recall/FPR from the collapsed output, onset and clear
 latency measured on held-out sessions, CPU/RSS sampled during replay.
 
-**Interference stress.** Train on clean sessions only; evaluate on fan / curtain /
-corridor sessions. Report per-scenario FPR. If the model collapses, that is the
-finding — it does not get averaged away.
+**Interference stress.** Train on clean sessions only; replay the held-out
+through-door sessions and report FPR on decided windows. That is one of the four
+conditions in the PRD; the other three were not recorded (D-010). If the model
+collapses, that is the finding — it does not get averaged away.
 
 ## 5. Failure handling
 
@@ -144,34 +154,47 @@ finding — it does not get averaged away.
 # setup
 pip install -r requirements.txt
 
-# 1. data contract
-python tools/validate_sessions.py --data data --manifest data/manifest.csv
+# 1. data contract (pilot campaign)
+python tools/validate_sessions.py --data data/pilot-20261029 \
+    --manifest data/pilot-20261029/manifest.csv
 #    PASS/FAIL per session, exit != 0 if anything failed
 
-# 2. offline evaluation (does not touch live code)
-python tools/loso_eval.py --data data --out results/
+# 2. historical pilot evaluation
+python tools/loso_eval.py --data data/pilot-20261029 --output results/pilot-20261029
 #    writes loso_metrics.json + LOSO-REPORT.md
 
-# 3. live
-python tools/live_dashboard.py --device <addr>
+# 3. reproduce the v2 headline (six held-out dorm-v2 sessions)
+python tools/v2_compare.py --data data/dorm-v2 \
+    --output results/v2-loso-reproduced.csv
+#    prints Match: True or exits 1
+
+# 4. replay one held-out capture
+python tools/presence_v2.py replay --model results/v2/presence-v2.json \
+    --input data/dorm-v2/balcony-01-raw.npz
+
+# 5. demo (no board, no network)
+#    open demo/index.html, arrow keys step through, space replays
 ```
 
-**Status of these commands today:** only step 1 exists (`tools/validate_sessions.py`).
-Steps 2 and 3 are specified here and not yet written — see
-[`traceability.md`](traceability.md). This document describes the design we are
-building, not a system that already runs.
+**Status of these commands today:** steps 1–4 exist and have produced committed
+results; step 5 is a static page. `tools/live_dashboard.py` and
+`tools/capture_session.py` do **not** exist, so the live path is designed but not
+built — see [`traceability.md`](traceability.md). The shipped classifier is
+logistic regression on 16 values, as described in §4.
 
-**Verification of a claim:** rerun step 2 and diff `loso_metrics.json`. Identical
-bytes = reproducible. Different bytes = the seed, the data hash or the code changed,
-and the report must say which.
+**Verification of a claim:** rerun step 3. `Match: True` means the six per-session
+rows still sum to 83/270 empty false positives and 174/270 seated detections. Any
+other output means the data, the seed or the code changed, and the report must say
+which.
 
 ## 7. Deployment and cost
 
 - **Where:** one laptop in the lab. No server, no cloud, no Docker.
 - **Cost:** ¥0 incremental — existing ESP32-C6, existing laptop, open-source stack.
-- **Footprint:** ~10 pps, 8 features, ~2k parameters ⇒ under 1 % of a modern CPU;
+- **Footprint:** ~10 pps, 16 coefficients + intercept ⇒ under 1 % of a modern CPU;
   the measured number goes in the report rather than this estimate.
 - **Persistence:** sessions and results are committed; the model is a small
-  `.npz`/`.pkl` committed alongside the metrics it produced.
+  JSON file (`results/v2/presence-v2.json`) committed alongside the metrics it
+  produced.
 - **What would change at 10× scale:** multi-AP fusion and a real time-series store.
   Out of scope here, mentioned only so the design is not mistaken for production.

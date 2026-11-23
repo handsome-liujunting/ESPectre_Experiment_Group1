@@ -24,9 +24,11 @@ results/     generated metrics + reports (never hand-edited)
 
 ```bash
 pip install -r requirements.txt
-python tools/validate_sessions.py --data data --manifest data/manifest.csv
+python tools/validate_sessions.py --data data/pilot-20261029 \
+    --manifest data/pilot-20261029/manifest.csv
 python tools/loso_eval.py --data data/pilot-20261029 --output results/pilot-20261029
 python tools/presence_v2.py replay --model results/v2/presence-v2.json --input data/dorm-v2/balcony-01-raw.npz
+python tools/v2_compare.py --data data/dorm-v2 --output results/v2-loso-reproduced.csv
 ```
 
 `tools/presence.py`, `tools/presence_v2.py` and `tools/loso_eval.py` are
@@ -54,12 +56,14 @@ reference them as if they exist.
 | Trap | What happens | Do this instead |
 | --- | --- | --- |
 | `code/train_ml_model.py` from upstream ESPectre | Imports `tools.lib.*`, which does not exist here; fails instantly | Reference only. Write minimal training code in `tools/` |
-| Duplicated `README.md` at root and in the nested `ESPectre_Experiment_Group1/` folder | Two sources of truth that drift | Keep one root README; delete the inner duplicate, do not sync it |
+| `tools/validate_sessions.py --data data` (the whole folder) | `data/dorm-v2/` stores `iq_raw`, not `csi_data`, so all 8 sessions come back `FAIL` | Point the validator at one campaign: `--data data/pilot-20261029` |
 | Old metrics: CV F1 76.3 % vs deployment gate FAIL | Numbers came from a different split and a different gate | Do not quote them as current results; rerun LOSO and cite the JSON |
 | Windows console + Chinese output | `UnicodeEncodeError` on redirected stdout | Scripts write ASCII to stdout; UTF-8 only to files |
 | `.npz` label stored per frame | Mixed labels inside one session | Reject mixed-label sessions in the validator |
 | Pilot LOSO: 98.3 % seated recall, 0 % false positives | Looks like a finished detector | It is not. 18 folds, one evening, one room, identical state sequences, zero flips. The one independent seated session scored 3.3 %. Quote both or neither |
-| `data/dorm-v2/` fed to `validate_sessions.py` | Folder is not a label, so labels resolve to `None` | That set is read by `tools/presence_v2.py`, not the validator |
+| `results/v2/CSI-feature-comparison.csv` | Only one of its four rows can be regenerated; the rest came from a script that was never committed | Reproduce the headline with `tools/v2_compare.py`; treat the other rows as exploration |
+| `results/v2/CSI-8-session-results.csv` | Pilot model on the eight `dorm-v2` captures; its balcony-01 row says 37 occupied, the v2 replay says 0 | Cite `results/v2/CSI-v2-balcony-0{1,2}.csv`; this file is superseded (D-011) |
+| `demo/build_demo_data.py` picking the first manifest row | Trains on an official holdout session and makes the page's pilot counts disagree with its cards | Select the three pilot captures by `source_role == "holdout"` and fit on `train` only |
 
 ## Done means
 
